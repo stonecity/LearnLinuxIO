@@ -9,8 +9,8 @@ using namespace std;
 
 SqlConnPool::SqlConnPool()
 {
-    useCount_ = 0;
-    freeCount_ = 0;
+    useCount = 0;
+    freeCount = 0;
 }
 
 SqlConnPool *SqlConnPool::Instance()
@@ -40,25 +40,25 @@ void SqlConnPool::Init(const char *host, int port,
         {
             LOG_ERROR("MySql Connect error!");
         }
-        connQue_.push(sql);
+        connQue.push(sql);
     }
-    MAX_CONN_ = connSize;
-    sem_init(&semId_, 0, MAX_CONN_);
+    MAX_CONN = connSize;
+    sem_init(&semId, 0, MAX_CONN);
 }
 
 MYSQL *SqlConnPool::GetConn()
 {
     MYSQL *sql = nullptr;
-    if (connQue_.empty())
+    if (connQue.empty())
     {
         LOG_WARN("SqlConnPool busy!");
         return nullptr;
     }
-    sem_wait(&semId_);
+    sem_wait(&semId);
     {
-        lock_guard<mutex> locker(mtx_);
-        sql = connQue_.front();
-        connQue_.pop();
+        lock_guard<mutex> locker(mtx);
+        sql = connQue.front();
+        connQue.pop();
     }
     return sql;
 }
@@ -66,18 +66,18 @@ MYSQL *SqlConnPool::GetConn()
 void SqlConnPool::FreeConn(MYSQL *sql)
 {
     assert(sql);
-    lock_guard<mutex> locker(mtx_);
-    connQue_.push(sql);
-    sem_post(&semId_);
+    lock_guard<mutex> locker(mtx);
+    connQue.push(sql);
+    sem_post(&semId);
 }
 
 void SqlConnPool::ClosePool()
 {
-    lock_guard<mutex> locker(mtx_);
-    while (!connQue_.empty())
+    lock_guard<mutex> locker(mtx);
+    while (!connQue.empty())
     {
-        auto item = connQue_.front();
-        connQue_.pop();
+        auto item = connQue.front();
+        connQue.pop();
         mysql_close(item);
     }
     mysql_library_end();
@@ -85,8 +85,8 @@ void SqlConnPool::ClosePool()
 
 int SqlConnPool::GetFreeConnCount()
 {
-    lock_guard<mutex> locker(mtx_);
-    return connQue_.size();
+    lock_guard<mutex> locker(mtx);
+    return connQue.size();
 }
 
 SqlConnPool::~SqlConnPool()

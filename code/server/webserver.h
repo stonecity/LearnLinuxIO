@@ -35,40 +35,40 @@ public:
     void Start();
 
 private:
-    bool InitSocket_(); 
-    void InitEventMode_(int trigMode);
-    void AddClient_(int fd, sockaddr_in addr);
+    bool InitSocket(); 
+    void InitEventMode(int trigMode);
+    void AddClient(int fd, sockaddr_in addr);
   
-    void DealListen_();
-    void DealWrite_(HttpConn* client);
-    void DealRead_(HttpConn* client);
+    void DealListen();
+    void DealWrite(HttpConn* client);
+    void DealRead(HttpConn* client);
 
-    void SendError_(int fd, const char*info);
-    void ExtentTime_(HttpConn* client);
-    void CloseConn_(HttpConn* client);
+    void SendError(int fd, const char*info);
+    void ExtentTime(HttpConn* client);
+    void CloseConn(HttpConn* client);
 
-    void OnRead_(HttpConn* client);
-    void OnWrite_(HttpConn* client);
+    void OnRead(HttpConn* client);
+    void OnWrite(HttpConn* client);
     void OnProcess(HttpConn* client);
 
     static const int MAX_FD = 65536;
 
     static int SetFdNonblock(int fd);
 
-    int port_;
-    bool openLinger_;
-    int timeoutMS_;  /* 毫秒MS */
-    bool isClose_;
-    int listenFd_;
-    char* srcDir_;
+    int port;
+    bool openLinger;
+    int timeoutMS;  /* 毫秒MS */
+    bool isClose;
+    int listenFd;
+    char* srcDir;
     
-    uint32_t listenEvent_;
-    uint32_t connEvent_;
+    uint32_t listenEvent;
+    uint32_t connEvent;
    
-    std::unique_ptr<HeapTimer> timer_;
-    std::unique_ptr<ThreadPool> threadpool_;
-    std::unique_ptr<Epoller> epoller_;
-    std::unordered_map<int, HttpConn> users_;
+    std::unique_ptr<HeapTimer> timer;
+    std::unique_ptr<ThreadPool> threadpool;
+    std::unique_ptr<Epoller> epoller;
+    std::unordered_map<int, HttpConn> users;
 };
 
 

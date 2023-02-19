@@ -21,9 +21,9 @@ public:
 
     bool AddFd(int fd, uint32_t events);
 
-    bool ModFd(int fd, uint32_t events);
+    bool ModifyFd(int fd, uint32_t events);
 
-    bool DelFd(int fd);
+    bool DeleteFd(int fd);
 
     int Wait(int timeoutMs = -1);
 
@@ -32,9 +32,9 @@ public:
     uint32_t GetEvents(size_t i) const;
         
 private:
-    int epollFd_;
+    int epollFd;
 
-    std::vector<struct epoll_event> events_;    
+    std::vector<struct epoll_event> events;    
 };
 
 #endif //EPOLLER_H

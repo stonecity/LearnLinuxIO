@@ -31,13 +31,13 @@ private:
     SqlConnPool();
     ~SqlConnPool();
 
-    int MAX_CONN_;
-    int useCount_;
-    int freeCount_;
+    int MAX_CONN;
+    int useCount;
+    int freeCount;
 
-    std::queue<MYSQL *> connQue_;
-    std::mutex mtx_;
-    sem_t semId_;
+    std::queue<MYSQL *> connQue;
+    std::mutex mtx;
+    sem_t semId;
 };
 
 
