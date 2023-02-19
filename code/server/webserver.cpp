@@ -104,7 +104,7 @@ void WebServer::Start()
             uint32_t events = epoller->GetEvents(i);
             if (fd == listenFd)
             {
-                DealListen();
+                HandleListen();
             }
             else if (events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
             {
@@ -114,12 +114,12 @@ void WebServer::Start()
             else if (events & EPOLLIN)
             {
                 assert(users.count(fd) > 0);
-                DealRead(&users[fd]);
+                HandleRead(&users[fd]);
             }
             else if (events & EPOLLOUT)
             {
                 assert(users.count(fd) > 0);
-                DealWrite(&users[fd]);
+                HandleWrite(&users[fd]);
             }
             else
             {
@@ -161,7 +161,7 @@ void WebServer::AddClient(int fd, sockaddr_in addr)
     LOG_INFO("Client[%d] in!", users[fd].GetFd());
 }
 
-void WebServer::DealListen()
+void WebServer::HandleListen()
 {
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
@@ -182,14 +182,14 @@ void WebServer::DealListen()
     } while (listenEvent & EPOLLET);
 }
 
-void WebServer::DealRead(HttpConn *client)
+void WebServer::HandleRead(HttpConn *client)
 {
     assert(client);
     ExtentTime(client);
     threadpool->AddTask(std::bind(&WebServer::OnRead, this, client));
 }
 
-void WebServer::DealWrite(HttpConn *client)
+void WebServer::HandleWrite(HttpConn *client)
 {
     assert(client);
     ExtentTime(client);

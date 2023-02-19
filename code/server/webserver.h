@@ -39,9 +39,9 @@ private:
     void InitEventMode(int trigMode);
     void AddClient(int fd, sockaddr_in addr);
   
-    void DealListen();
-    void DealWrite(HttpConn* client);
-    void DealRead(HttpConn* client);
+    void HandleListen();
+    void HandleWrite(HttpConn* client);
+    void HandleRead(HttpConn* client);
 
     void SendError(int fd, const char*info);
     void ExtentTime(HttpConn* client);
