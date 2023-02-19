@@ -44,13 +44,13 @@ public:
     ssize_t WriteFd(int fd, int* Errno);
 
 private:
-    char* BeginPtr_();
-    const char* BeginPtr_() const;
-    void MakeSpace_(size_t len);
+    char* BeginPtr();
+    const char* BeginPtr() const;
+    void MakeSpace(size_t len);
 
-    std::vector<char> buffer_;
-    std::atomic<std::size_t> readPos_;
-    std::atomic<std::size_t> writePos_;
+    std::vector<char> buffer;
+    std::atomic<std::size_t> readPos;
+    std::atomic<std::size_t> writePos;
 };
 
 #endif //BUFFER_H
