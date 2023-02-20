@@ -44,7 +44,7 @@ const unordered_map<int, string> HttpResponse::CODE_PATH = {
 
 HttpResponse::HttpResponse()
 {
-    code = -1;
+    mCode = -1;
     path = mSrcDir = "";
     isKeepAlive = false;
     mmFile = nullptr;
@@ -63,7 +63,7 @@ void HttpResponse::Init(const string &srcDir, string &path, bool isKeepAlive, in
     {
         UnmapFile();
     }
-    code = code;
+    mCode = code;
     isKeepAlive = isKeepAlive;
     path = path;
     mSrcDir = srcDir;
@@ -76,15 +76,15 @@ void HttpResponse::MakeResponse(Buffer &buff)
     /* 判断请求的资源文件 */
     if (stat((mSrcDir + path).data(), &mmFileStat) < 0 || S_ISDIR(mmFileStat.st_mode))
     {
-        code = 404;
+        mCode = 404;
     }
     else if (!(mmFileStat.st_mode & S_IROTH))
     {
-        code = 403;
+        mCode = 403;
     }
-    else if (code == -1)
+    else if (mCode == -1)
     {
-        code = 200;
+        mCode = 200;
     }
     ErrorHtml();
     AddStateLine(buff);
@@ -104,9 +104,9 @@ size_t HttpResponse::FileLen() const
 
 void HttpResponse::ErrorHtml()
 {
-    if (CODE_PATH.count(code) == 1)
+    if (CODE_PATH.count(mCode) == 1)
     {
-        path = CODE_PATH.find(code)->second;
+        path = CODE_PATH.find(mCode)->second;
         stat((mSrcDir + path).data(), &mmFileStat);
     }
 }
@@ -114,16 +114,16 @@ void HttpResponse::ErrorHtml()
 void HttpResponse::AddStateLine(Buffer &buff)
 {
     string status;
-    if (CODE_STATUS.count(code) == 1)
+    if (CODE_STATUS.count(mCode) == 1)
     {
-        status = CODE_STATUS.find(code)->second;
+        status = CODE_STATUS.find(mCode)->second;
     }
     else
     {
-        code = 400;
+        mCode = 400;
         status = CODE_STATUS.find(400)->second;
     }
-    buff.Append("HTTP/1.1 " + to_string(code) + " " + status + "\r\n");
+    buff.Append("HTTP/1.1 " + to_string(mCode) + " " + status + "\r\n");
 }
 
 void HttpResponse::AddHeader(Buffer &buff)
@@ -195,15 +195,15 @@ void HttpResponse::ErrorContent(Buffer &buff, string message)
     string status;
     body += "<html><title>Error</title>";
     body += "<body bgcolor=\"ffffff\">";
-    if (CODE_STATUS.count(code) == 1)
+    if (CODE_STATUS.count(mCode) == 1)
     {
-        status = CODE_STATUS.find(code)->second;
+        status = CODE_STATUS.find(mCode)->second;
     }
     else
     {
         status = "Bad Request";
     }
-    body += to_string(code) + " : " + status + "\n";
+    body += to_string(mCode) + " : " + status + "\n";
     body += "<p>" + message + "</p>";
     body += "<hr><em>TinyWebServer</em></body></html>";
 

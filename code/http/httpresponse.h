@@ -27,7 +27,7 @@ public:
     char *File();
     size_t FileLen() const;
     void ErrorContent(Buffer &buff, std::string message);
-    int Code() const { return code; }
+    int Code() const { return mCode; }
 
 private:
     void AddStateLine(Buffer &buff);
@@ -37,7 +37,7 @@ private:
     void ErrorHtml();
     std::string GetFileType();
 
-    int code;
+    int mCode;
     bool isKeepAlive;
 
     std::string path;
