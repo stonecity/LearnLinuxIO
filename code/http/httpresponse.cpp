@@ -58,7 +58,7 @@ HttpResponse::~HttpResponse()
 
 void HttpResponse::Init(const string &srcDir, string &path, bool isKeepAlive, int code)
 {
-    assert(mSrcDir != "");
+    assert(srcDir != "");
     if (mmFile)
     {
         UnmapFile();

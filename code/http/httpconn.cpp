@@ -12,7 +12,7 @@ bool HttpConn::isET;
 
 HttpConn::HttpConn()
 {
-    fd = -1;
+    mFd = -1;
     mAddr = {0};
     isClose = true;
 };
@@ -27,7 +27,7 @@ void HttpConn::init(int fd, const sockaddr_in &addr)
     assert(fd > 0);
     userCount++;
     mAddr = addr;
-    fd = fd;
+    mFd = fd;
     writeBuff.RetrieveAll();
     readBuff.RetrieveAll();
     isClose = false;
@@ -41,14 +41,14 @@ void HttpConn::Close()
     {
         isClose = true;
         userCount--;
-        close(fd);
-        LOG_INFO("Client[%d](%s:%d) quit, UserCount:%d", fd, GetIP(), GetPort(), (int)userCount);
+        close(mFd);
+        LOG_INFO("Client[%d](%s:%d) quit, UserCount:%d", mFd, GetIP(), GetPort(), (int)userCount);
     }
 }
 
 int HttpConn::GetFd() const
 {
-    return fd;
+    return mFd;
 };
 
 struct sockaddr_in HttpConn::GetAddr() const
@@ -71,7 +71,7 @@ ssize_t HttpConn::read(int *saveErrno)
     ssize_t len = -1;
     do
     {
-        len = readBuff.ReadFd(fd, saveErrno);
+        len = readBuff.ReadFd(mFd, saveErrno);
         if (len <= 0)
         {
             break;
@@ -85,7 +85,7 @@ ssize_t HttpConn::write(int *saveErrno)
     ssize_t len = -1;
     do
     {
-        len = writev(fd, iov, iovCnt);
+        len = writev(mFd, iov, iovCnt);
         if (len <= 0)
         {
             *saveErrno = errno;

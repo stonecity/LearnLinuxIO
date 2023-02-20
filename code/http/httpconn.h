@@ -59,7 +59,7 @@ public:
     static std::atomic<int> userCount;
 
 private:
-    int fd;
+    int mFd;
     struct sockaddr_in mAddr;
 
     bool isClose;
