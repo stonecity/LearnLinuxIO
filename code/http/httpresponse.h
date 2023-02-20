@@ -40,7 +40,7 @@ private:
     int mCode;
     bool isKeepAlive;
 
-    std::string path;
+    std::string mPath;
     std::string mSrcDir;
 
     char *mmFile;
